@@ -23,4 +23,6 @@ end
 
 ### Implementation details
 Textprogressbar is implemented using Matlab's nested-function feature: invoking `textprogressbar(n)` initializes and renders an empty progress bar and returns a handle (pointer) to a nested function which can be used to update the status and re-render the progress bar.
-Why not an Object Oriented approach? Although Matlab supports an OO architecture, I found it to be much slower compared to the nested-function implementation; the objective is to have a light-weight progress bar that allows monitoring the progress of a long task without incurring a substantial overhead.
+
+Why not an Object Oriented approach? 
+Although Matlab supports an OO architecture, I found it to be much slower compared to the nested-function implementation; the objective is to have a light-weight progress bar that allows monitoring the progress of a long task without incurring a substantial overhead.
