@@ -1,5 +1,10 @@
 # textprogressbar
-A text progress bar for Matlab's command window.
+A (hopefully lightweight) text progress bar to monitor the execution of a long task,
+such as a loop with large number of iterations, in Matlab's command line.
+
+### Careful:
+* No printing while using the progress bar.
+* When monitoring a loop, if each round is too fast, the bar rendering may incur too much of an overhead. Use the optional `updatestep` parameter to adjust how frequently the bar should be re-rendered.
 
 ## Examples
 
