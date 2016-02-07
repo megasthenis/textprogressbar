@@ -6,6 +6,11 @@ such as a loop with large number of iterations, in Matlab's command line.
 * No printing while using the progress bar.
 * When monitoring a loop, if each round is too fast, the bar rendering may incur too much of an overhead. Use the optional `updatestep` parameter to adjust how frequently the bar should be re-rendered.
 
+What does it look like?
+-----------------------
+![Where is my demo gif?](demo.gif)
+
+
 Examples
 --------
 Use the bar right out of the box:
@@ -40,11 +45,6 @@ for i = 1:n
    upd(i);
 end
 ```
-
-What does it look like?
------------------------
-[//]: # (![Alt Text](https://github.com/https://github.com/megasthenis/textprogressbar/demo.gif))
-![Where is my demo gif?](demo.gif)
 
 Other
 -----

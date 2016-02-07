@@ -1,49 +1,55 @@
 function upd = textprogressbar(n, varargin)
-% TEXTPROGRESSBAR displays a progress bar in the standard output.
-% It initializes a progress bar in the standard output and returns a
-% function to update its status.
+% UPD = TEXTPROGRESSBAR(N) creates a progress bar for monitoring a task 
+% comprising N steps, e.g., the N rounds of an iteration. It returns a
+% function handle that is used to update and render the progress bar.
 %
-% Args:
-% -----
+% Input:
 %  n (int): the number of tasks monitored by the progress bar; e.g., the
 %           number of rounds of an iteration. Must be positive.
 %
-% Optional Parameters:
-% --------------------
-% barlength (int): length of the progress bar. Must be positive.
-%                  (Default value is 20 characters.)
-% updatestep (int): minimum number of progress (update) steps between
-%                   consecutive bar re-renderings. This controls how
-%                   frequently the bar is rendered to reduce the overhead
-%                   due to bar updating. It is especially useful when bar
-%                   is used for loops with large number of rounds and
-%                   short execution time per round.
-%                   (Default value is 10 steps.)
-% startmsg (string): message to be displayed before the progress bar.
-%                    (Default is 'Running: '.)
-% endmsg (string): message to be displayed after progress bar.
-%                  (Default is ' Done.')
-% showremtime (logical): show an estimate of the remaining time.
-%                        (Default is true.)
-% showpercentage (logical): show percentage completed. (Default is true.)
-% showfinaltime (logical): show total running time when completed.
-%                          (Default is true.)
-% barsymbol (char): Symbol (character) to be used for the progress bar.
-%                   Must be a single character.
-%                   (Default is '='.)
-% emptybarsymbol (char): Symbol (character) to be used for the empty
-%                        (non-completed) part of the progress bar.
-%                        Must be a single character.
-%                        (Default is ' '.)
 % Returns:
-% --------
 %   upd (function): A function used to update/render the progress bar.
 %                   The function takes an argument i <= n and renders the
 %                   text accordingly.
 %
-% Example:
-% --------
+% Optional Parameters:
+%   barlength (int): length of the progress bar. Must be positive.
+%                    (Default value is 20 characters.)
+%   updatestep (int): minimum number of progress (update) steps between
+%                     consecutive bar re-renderings. This controls how
+%                     frequently the bar is rendered to reduce the overhead
+%                     due to bar updating. It is especially useful when bar
+%                     is used for loops with large number of rounds and
+%                     short execution time per round.
+%                     (Default value is 10 steps.)
+%   startmsg (string): message to be displayed before the progress bar.
+%                      (Default is 'Running: '.)
+%   endmsg (string): message to be displayed after progress bar.
+%                    (Default is ' Done.')
+%   showremtime (logical): show an estimate of the remaining time.
+%                          (Default is true.)
+%   showpercentage (logical): show percentage completed.
+%                             (Default is true.)
+%   showactualnum (logical): show actual number of items completed.
+%                            (Default is false.)
+%   showfinaltime (logical): show total running time when completed.
+%                            (Default is true.)
+%   barsymbol (char): Symbol (character) to be used for the progress bar.
+%                     Must be a single character.
+%                     (Default is '='.)
+%   emptybarsymbol (char): Symbol (character) to be used for the empty
+%                          (non-completed) part of the progress bar.
+%                          Must be a single character.
+%                          (Default is ' '.)
 %
+% Example:
+%
+%   n = 150;
+%   upd = textprogressbar(n);
+%   for i = 1:n
+%      pause(0.05);
+%      upd(i);
+%   end
 %
 
     % Default Parameter values:
@@ -53,6 +59,7 @@ function upd = textprogressbar(n, varargin)
     defaultEndMsg = ' Done.';
     defaultShowRemTime = true;
     defaultShowPercentage = true;
+    defaultShowActualNum = false;
     defaultShowFinalTime = true;
     defaultBarSymbol = '=';
     defaultEmptyBarSymbol = ' ';
@@ -70,6 +77,7 @@ function upd = textprogressbar(n, varargin)
     addParameter(p, 'endmsg', defaultEndMsg, @ischar)
     addParameter(p, 'showremtime', defaultShowRemTime, @islogical)
     addParameter(p, 'showpercentage', defaultShowPercentage, @islogical)
+    addParameter(p, 'showactualnum', defaultShowActualNum, @islogical)
     addParameter(p, 'showfinaltime', defaultShowFinalTime, @islogical)
     addParameter(p, 'barsymbol', defaultBarSymbol, ischarsymbol)
     addParameter(p, 'emptybarsymbol', defaultEmptyBarSymbol, ischarsymbol)
@@ -83,6 +91,7 @@ function upd = textprogressbar(n, varargin)
     endmsg = p.Results.endmsg;
     showremtime = p.Results.showremtime;
     showpercentage = p.Results.showpercentage;
+    showactualnum = p.Results.showactualnum;
     showfinaltime = p.Results.showfinaltime;
     barsymbol = p.Results.barsymbol;
     emptybarsymbol = p.Results.emptybarsymbol;
@@ -98,9 +107,16 @@ function upd = textprogressbar(n, varargin)
     remtime_str = ' --:--:--';
     percentage_str = '   0%';
     
+    actualnumdigits = numel(num2str(n));
+    actualnumformat = sprintf(' %%%dd/%d', actualnumdigits, n);
+    actualnum_str = sprintf(actualnumformat, 0);
+    
     % Initial render (empty bar):
     fprintf('%s', startmsg);  % Starting message
     fprintf('%s', bar);
+    if showactualnum
+        fprintf('%s', actualnum_str)
+    end
     if showpercentage
         fprintf('%s', percentage_str);
     end
@@ -126,7 +142,12 @@ function upd = textprogressbar(n, varargin)
                 % Delete percentage block:
                 fprintf(repmat('\b', [1, length(percentage_str)]));
             end
-
+            
+            if showactualnum
+                % Delete actual num block:
+                fprintf(repmat('\b', [1, length(actualnum_str)]));
+            end
+    
             % Update progress bar if needed:
             bars = floor( i / n * barlength );    
             if bars > bars_printed
@@ -151,6 +172,12 @@ function upd = textprogressbar(n, varargin)
                 
                 fprintf('\n');
                 return;
+            end
+            
+            if showactualnum
+                % Delete actual num block:
+                actualnum_str = sprintf(actualnumformat, i);
+                fprintf('%s', actualnum_str);
             end
             
             if showpercentage
