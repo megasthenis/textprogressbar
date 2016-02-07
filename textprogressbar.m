@@ -168,18 +168,23 @@ function upd = textprogressbar(n, varargin)
     
     % End msg block:
     endMsgLen = length(endMsg);
-    endMsgStart = barEnd + 1; % Place end message right after bar;
+    if showBar
+        endMsgStart = barEnd + 1; % Place end message right after bar;
+    else
+        endMsgStart = startMsgEnd + 1;
+    end
     endMsgEnd = endMsgStart + endMsgLen - 1;
     
     ind = max([ind, endMsgEnd]);
     
     % Determine size of buffer:
-    array = repmat(' ', 1, ind-1);
+    arrayLen = ind - 1;
+    array = repmat(' ', 1, arrayLen);
     
     % Initial render:
     array(startMsgStart:startMsgEnd) = sprintf('%s', startMsg);
 
-    delAll = repmat('\b', 1, ind-1);
+    delAll = repmat('\b', 1, arrayLen);
     
         % Function to update the status of the progress bar:
         function update(i)
@@ -218,12 +223,21 @@ function upd = textprogressbar(n, varargin)
             % Check if done:
             if i >= n
                 array(endMsgStart:endMsgEnd) = endMsg;
-                fprintf('%s', array(1:endMsgEnd));
+                array(endMsgEnd+1:end) = ' ';
                 
                 if showFinalTime
-                    fprintf(' [%d seconds]', round(toc(startTime)))
+                    finalTimeStr = ...
+                        sprintf(' [%d seconds]', round(toc(startTime)));
+                    finalTimeLen = length(finalTimeStr);
+                    if endMsgEnd + finalTimeLen < arrayLen
+                       array(endMsgEnd+1:endMsgEnd+finalTimeLen) = ... 
+                           finalTimeStr;
+                    else
+                       array = [array(1:endMsgEnd), finalTimeStr];
+                    end
                 end
                 
+                fprintf('%s', array);
                 fprintf('\n');
                 return;
             end
