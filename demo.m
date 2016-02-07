@@ -18,6 +18,7 @@ end
 disp('Example 2: The bar is customizable...')
 
 n = 150;
+
 % Initialize progress bar with optinal parameters:
 upd = textprogressbar(n, 'barlength', 20, ...
                          'updatestep', 10, ...

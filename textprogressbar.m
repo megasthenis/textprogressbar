@@ -103,79 +103,122 @@ function upd = textprogressbar(n, varargin)
     
     % Initialize progress bar:
     bar = ['[', repmat(emptybarCharSymbol, 1, barCharLen), ']'];
-    del_bar = repmat('\b', 1, barCharLen+2);
+    delBlockBar = repmat('\b', 1, barCharLen+2);
     
     nextRenderPoint = 0;
     barCharsPrinted = 0;
     startTime = tic;
-    remTime = Inf;
-    remTimeStr = ' --:--:--';
-    percentStr = '   0%';
     
     % Initalize block for actual number of completed items:
+    
+    ind = 1;
+    
+    % Start message block:
+    startMsgLen = length(startMsg);
+    startMsgStart = ind;
+    startMsgEnd = startMsgStart + startMsgLen - 1;
+    ind = ind + startMsgLen;
+    
+    % Bar block:
+    barLen = length(bar);
+    barStart = 0;
+    barEnd = 0;
+    if showBar
+        barStart = ind;
+        barEnd = barStart + barLen - 1;
+        ind = ind + barLen;
+    end
+    
+    % Actual Num block:
     actualNumDigitLen = numel(num2str(n));
     actualNumFormat = sprintf(' %%%dd/%d', actualNumDigitLen, n);
     actualNumStr = sprintf(actualNumFormat, 0);
+    actualNumLen = length(actualNumStr);
+    actualNumStart = 0;
+    actualNumEnd = 0;
+    if showActualNum
+        actualNumStart = ind;
+        actualNumEnd = actualNumStart + actualNumLen-1;
+        ind = ind + actualNumLen;
+    end
+        
+    % Percentage block:
+    percentageFormat = sprintf(' %%3d%%%%');
+    percentageStr = sprintf(percentageFormat, 0);
+    percentageLen = length(percentageStr);
+    percentageStart = 0;
+    percentageEnd = 0;
+    if showPercentage
+        percentageStart = ind;
+        percentageEnd = percentageStart + percentageLen-1;
+        ind = ind + percentageLen;
+    end
+    
+    % Remaining Time block:
+    remTimeStr = time2str(Inf);
+    remTimeLen = length(remTimeStr);
+    remTimeStart = 0;
+    remTimeEnd = 0;
+    if showremTime
+       remTimeStart = ind;
+       remTimeEnd = remTimeStart + remTimeLen - 1;
+       ind = ind + remTimeLen;
+    end
+    
+    
+    % End msg block:
+    endMsgLen = length(endMsg);
+    endMsgStart = barEnd + 1; % Place end message right after bar;
+    endMsgEnd = endMsgStart + endMsgLen - 1;
+    
+    ind = max([ind, endMsgEnd]);
+    
+    % Determine size of buffer:
+    array = repmat(' ', 1, ind-1);
     
     % Initial render:
-    fprintf('%s', startMsg);  % Starting message
-    if showBar
-        fprintf('%s', bar);
-    end
-    if showActualNum
-        fprintf('%s', actualNumStr)
-    end
-    if showPercentage
-        fprintf('%s', percentStr);
-    end
-    if showremTime
-       fprintf('%s', remTimeStr);
-    end
+    array(startMsgStart:startMsgEnd) = sprintf('%s', startMsg);
 
+    delAll = repmat('\b', 1, ind-1);
+    
         % Function to update the status of the progress bar:
         function update(i)
-
+            
             if i < nextRenderPoint
                 return;
             end
-            
+            if i > 0
+                fprintf(delAll);
+            end
+            %pause(1)
             nextRenderPoint = min([nextRenderPoint + updStep, n]);
             
             if showremTime
                 % Delete remaining time block:
-                fprintf(repmat('\b', [1, length(remTimeStr)]));
+                array(remTimeStart:remTimeEnd) = ' ';
             end
 
             if showPercentage
                 % Delete percentage block:
-                fprintf(repmat('\b', [1, length(percentStr)]));
+                array(percentageStart:percentageEnd) = ' ';
             end
             
             if showActualNum
                 % Delete actual num block:
-                fprintf(repmat('\b', [1, length(actualNumStr)]));
+                array(actualNumStart:actualNumEnd) = ' ';
             end
     
             if showBar
                 % Update progress bar (only if needed):
-                barsToPrint = floor( i / n * barCharLen );    
-                if barsToPrint > barCharsPrinted
-                    % Delete progress bar:
-                    fprintf(del_bar);
-
-                    % Update bar status:
-                    bar((2+barCharsPrinted):(1+barsToPrint)) = ...
-                        barCharSymbol;
-                    barCharsPrinted = barsToPrint;
-
-                    % Render progress bar:
-                    fprintf(bar);
-                end
+                barsToPrint = floor( i / n * barCharLen );
+                bar(2:1+barsToPrint) = barCharSymbol;
+                array(barStart:barEnd) = bar;
             end
             
             % Check if done:
             if i >= n
-                fprintf('%s', endMsg);
+                array(endMsgStart:endMsgEnd) = endMsg;
+                fprintf('%s', array(1:endMsgEnd));
                 
                 if showFinalTime
                     fprintf(' [%d seconds]', round(toc(startTime)))
@@ -188,14 +231,14 @@ function upd = textprogressbar(n, varargin)
             if showActualNum
                 % Delete actual num block:
                 actualNumStr = sprintf(actualNumFormat, i);
-                fprintf('%s', actualNumStr);
+                array(actualNumStart:actualNumEnd) = actualNumStr;
             end
             
             if showPercentage
                 % Render percentage block:
                 percentage = floor(i / n * 100);
-                percentStr = sprintf(' %3d%%', percentage);
-                fprintf('%s', percentStr);
+                percentageStr = sprintf(percentageFormat, percentage);
+                array(percentageStart:percentageEnd) = percentageStr;
             end
                 
             % Print remaining time block:
@@ -203,21 +246,28 @@ function upd = textprogressbar(n, varargin)
                t = toc(startTime);
                remTime = t/ i * (n-i);
                remTimeStr = time2str(remTime);
-               fprintf('%s', remTimeStr);
+               array(remTimeStart:remTimeEnd) = remTimeStr;
             end
-            
+            fprintf('%s', array);
         end
     
+    % Do the first render:
+    update(0);
+    
     upd = @update;
-
+    
 end
 
 % Auxiliary functions
+
 function timestr = time2str(t)
 
-    [hh, mm, tt] = sec2hhmmss(t);
-    timestr = sprintf(' %02d:%02d:%02d', hh, mm, tt);
-
+    if t == Inf
+        timestr = sprintf(' --:--:--');
+    else
+        [hh, mm, tt] = sec2hhmmss(t);
+        timestr = sprintf(' %02d:%02d:%02d', hh, mm, tt);
+    end
 end
 
 function [hh, mm, ss] = sec2hhmmss(t)

@@ -1,5 +1,5 @@
 # textprogressbar
-A (hopefully lightweight) text progress bar to monitor the execution of a long task,
+A lightweight, customizable text progress bar to monitor the execution of a long task,
 such as a loop with large number of iterations, in Matlab's command line.
 
 ###### Careful:
