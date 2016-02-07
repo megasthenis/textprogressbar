@@ -41,13 +41,13 @@ n = 100;
 upd = textprogressbar(n, 'showremtime', false);
 
 % Perform some tasks;
-pause(1);
+pause(0.5);
 upd(n/10);
-pause(1);
+pause(0.5);
 upd(2*n/10);
 
 % And then some more:
-pause(2);
-upd(5*n/10);
 pause(1);
+upd(5*n/10);
+pause(0.5);
 upd(n);
