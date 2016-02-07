@@ -8,7 +8,7 @@ such as a loop with large number of iterations, in Matlab's command line.
 
 ## Examples
 
-This is a simple example using textprogressbar to track the progress of a loop:
+Use the bar right out of the box:
 ```matlab
 n = 150; % the size of the loop (total number of steps tracked).
 
@@ -23,7 +23,8 @@ for i = 1:n
     upd(i);
 end
 ```
-And a second example, customizing the progress bar:
+
+or customize it to make life a little better:
 ```matlab
 n = 150;
 % Initialize progress bar with optinal parameters:
