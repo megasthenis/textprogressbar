@@ -28,6 +28,8 @@ function upd = textprogressbar(n, varargin)
 %                    (Default is ' Done.')
 %   showremtime (logical): show an estimate of the remaining time.
 %                          (Default is true.)
+%   showbar (logical): show the progress bar.
+%                      (Default is true.)
 %   showpercentage (logical): show percentage completed.
 %                             (Default is true.)
 %   showactualnum (logical): show actual number of items completed.
@@ -58,6 +60,7 @@ function upd = textprogressbar(n, varargin)
     defaultstartMsg = 'Running: ';
     defaultendMsg = ' Done.';
     defaultShowremTime = true;
+    defaultShowBar = true;
     defaultshowPercentage = true;
     defaultshowActualNum = false;
     defaultshowFinalTime = true;
@@ -76,6 +79,7 @@ function upd = textprogressbar(n, varargin)
     addParameter(p, 'startmsg', defaultstartMsg, @ischar)
     addParameter(p, 'endmsg', defaultendMsg, @ischar)
     addParameter(p, 'showremtime', defaultShowremTime, @islogical)
+    addParameter(p, 'showbar', defaultShowBar, @islogical)
     addParameter(p, 'showpercentage', defaultshowPercentage, @islogical)
     addParameter(p, 'showactualnum', defaultshowActualNum, @islogical)
     addParameter(p, 'showfinaltime', defaultshowFinalTime, @islogical)
@@ -90,6 +94,7 @@ function upd = textprogressbar(n, varargin)
     startMsg = p.Results.startmsg;
     endMsg = p.Results.endmsg;
     showremTime = p.Results.showremtime;
+    showBar = p.Results.showbar;
     showPercentage = p.Results.showpercentage;
     showActualNum = p.Results.showactualnum;
     showFinalTime = p.Results.showfinaltime;
@@ -112,10 +117,11 @@ function upd = textprogressbar(n, varargin)
     actualNumFormat = sprintf(' %%%dd/%d', actualNumDigitLen, n);
     actualNumStr = sprintf(actualNumFormat, 0);
     
-    % Initial render (empty bar):
+    % Initial render:
     fprintf('%s', startMsg);  % Starting message
-    fprintf('%s', bar);
-    
+    if showBar
+        fprintf('%s', bar);
+    end
     if showActualNum
         fprintf('%s', actualNumStr)
     end
@@ -150,18 +156,21 @@ function upd = textprogressbar(n, varargin)
                 fprintf(repmat('\b', [1, length(actualNumStr)]));
             end
     
-            % Update progress bar (only if needed):
-            barsToPrint = floor( i / n * barCharLen );    
-            if barsToPrint > barCharsPrinted
-                % Delete progress bar:
-                fprintf(del_bar);
-                
-                % Update bar status:
-                bar((2+barCharsPrinted):(1+barsToPrint)) = barCharSymbol;
-                barCharsPrinted = barsToPrint;
-                
-                % Render progress bar:
-                fprintf(bar);
+            if showBar
+                % Update progress bar (only if needed):
+                barsToPrint = floor( i / n * barCharLen );    
+                if barsToPrint > barCharsPrinted
+                    % Delete progress bar:
+                    fprintf(del_bar);
+
+                    % Update bar status:
+                    bar((2+barCharsPrinted):(1+barsToPrint)) = ...
+                        barCharSymbol;
+                    barCharsPrinted = barsToPrint;
+
+                    % Render progress bar:
+                    fprintf(bar);
+                end
             end
             
             % Check if done:
