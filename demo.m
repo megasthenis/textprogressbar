@@ -28,7 +28,7 @@ upd = textprogressbar(n, 'barlength', 20, ...
                          'emptybarsymbol', '-');
 for i = 1:n
    pause(0.05);
-   upd(i)
+   upd(i);
 end
 
 

@@ -2,12 +2,12 @@
 A (hopefully lightweight) text progress bar to monitor the execution of a long task,
 such as a loop with large number of iterations, in Matlab's command line.
 
-##### Careful:
+###### Careful:
 * No printing while using the progress bar.
 * When monitoring a loop, if each round is too fast, the bar rendering may incur too much of an overhead. Use the optional `updatestep` parameter to adjust how frequently the bar should be re-rendered.
 
-## Examples
-
+Examples
+--------
 Use the bar right out of the box:
 ```matlab
 n = 150; % the size of the loop (total number of steps tracked).
@@ -37,14 +37,19 @@ upd = textprogressbar(n, 'barlength', 20, ...
                          'emptybarsymbol', '-');
 for i = 1:n
    pause(0.05);
-   upd(i)
+   upd(i);
 end
 ```
 
-## Other
+What does it look like?
+-----------------------
+[//]: # (![Alt Text](https://github.com/https://github.com/megasthenis/textprogressbar/demo.gif))
+![Where is my demo gif?](demo.gif)
+
+Other
+-----
 
 ### Implementation details
 Textprogressbar is implemented using Matlab's nested-function feature: invoking `textprogressbar(n)` initializes and renders an empty progress bar and returns a handle (pointer) to a nested function which can be used to update the status and re-render the progress bar.
 
-_Why not an Object Oriented approach?_ 
-Although Matlab supports an OO architecture, I found it to be much slower compared to the nested-function implementation; the objective is to have a light-weight progress bar that allows monitoring the progress of a long task without incurring a substantial overhead.
+_Why not an Object Oriented approach?_ Although Matlab supports an OO architecture, I found it to be much slower compared to the nested-function implementation; the objective is to have a light-weight progress bar that allows monitoring the progress of a long task without incurring a substantial overhead.
