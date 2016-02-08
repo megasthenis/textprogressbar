@@ -23,7 +23,7 @@ function upd = textprogressbar(n, varargin)
 %                     short execution time per round.
 %                     (Default value is 10 steps.)
 %   startmsg (string): message to be displayed before the progress bar.
-%                      (Default is 'Running: '.)
+%                      (Default is 'Completed '.)
 %   endmsg (string): message to be displayed after progress bar.
 %                    (Default is ' Done.')
 %   showremtime (logical): show an estimate of the remaining time.
@@ -57,7 +57,7 @@ function upd = textprogressbar(n, varargin)
     % Default Parameter values:
     defaultbarCharLen = 20;
     defaultUpdStep = 10;
-    defaultstartMsg = 'Running: ';
+    defaultstartMsg = 'Completed ';
     defaultendMsg = ' Done.';
     defaultShowremTime = true;
     defaultShowBar = true;

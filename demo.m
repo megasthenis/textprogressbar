@@ -1,29 +1,33 @@
-%% Example 1: Simple bar (Default options)
-disp('Example 1: Simple bar')
+%% Textprogressbar Examples
+% A demonstration of the textprogressbar module.
 
+%% Example 1: Simple bar (Out of the box settings)
+
+% Number of items:
 n = 150;
 
-% Initialize progress bar and get handle:
+% Initialize progress bar:
 upd = textprogressbar(n);
 
 for i = 1:n
     % Perform task:
     pause(0.05);
-    
-    % Update progress bar using handle:
+    fprintf('asdfasdf\n')
+    % Update progress bar:
     upd(i);
 end
 
-%% Example 2: Custom bar (Setting optional parameters)
-disp('Example 2: The bar is customizable...')
 
+%% Example 2: Customized configuration
+
+% Number of items:
 n = 150;
 
 % Initialize progress bar with optinal parameters:
 upd = textprogressbar(n, 'barlength', 20, ...
                          'updatestep', 10, ...
                          'startmsg', 'Waiting... ',...
-                         'endmsg', ' Yay!', ...
+                         'endmsg', ' Finally!', ...
                          'showbar', true, ...
                          'showremtime', true, ...
                          'showactualnum', true, ...
@@ -34,15 +38,16 @@ for i = 1:n
    upd(i);
 end
 
-%% Example 3: No progress bar. Just show completed items and percentage.
-disp('Example 3: Without a progress bar...')
+%% Example 3: We can even hide the progress bar
 
-n = 150;
+% Number of items:
+n = 300;
+
 % Initialize progress bar with optinal parameters:
 upd = textprogressbar(n, 'barlength', 20, ...
-                         'updatestep', 10, ...
+                         'updatestep', 20, ...
                          'startmsg', 'Completed ',...
-                         'endmsg', ' Yay!', ...
+                         'endmsg', ' Done.', ...
                          'showbar', false, ...
                          'showremtime', true, ...
                          'showactualnum', false, ...
@@ -52,21 +57,4 @@ for i = 1:n
    pause(0.05);
    upd(i);
 end
-%% Example 4: Outside a loop.
-disp('Example 4: I can use it outside a loop too...')
 
-n = 100;
-% Initialize progress bar:
-upd = textprogressbar(n, 'showremtime', false);
-
-% Perform some tasks;
-pause(0.5);
-upd(n/10);
-pause(0.5);
-upd(2*n/10);
-
-% And then some more:
-pause(1);
-upd(5*n/10);
-pause(0.5);
-upd(n);
