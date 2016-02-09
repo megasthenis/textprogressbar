@@ -68,5 +68,5 @@ _Why not an Object Oriented approach?_ Although Matlab supports an OO architectu
 In OSX and Ubuntu Linux on Matlab 2013b and 2015b.
 
 ### Bugs, comments, suggestions?
-Shoot me an email at (megas@utexas.edu).
+Shoot me an email at megas@utexas.edu.
 
