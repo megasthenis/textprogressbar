@@ -1,48 +1,59 @@
 function upd = textprogressbar(n, varargin)
-% UPD = TEXTPROGRESSBAR(N) creates a progress bar for monitoring a task 
-% comprising N steps, e.g., the N rounds of an iteration. It returns a
-% function handle that is used to update and render the progress bar.
+% UPD = TEXTPROGRESSBAR(N) initializes a text progress bar for monitoring a
+% task comprising N steps (e.g., the N rounds of an iteration) in the
+% command line. It returns a function handle UPD that is used to update and
+% render the progress bar. UPD takes a single argument i <= N which 
+% corresponds to the number of tasks completed and renders the progress bar
+% accordingly.
+%                   
+% TEXTPROGRESSBAR(...,'barlength',L) determines the length L of the
+% progress bar in number of characters (see 'barsymbol' option). L must be
+% a positive integer. 
+% (Default value is 20 characters.)
 %
-% Input:
-%  n (int): the number of tasks monitored by the progress bar; e.g., the
-%           number of rounds of an iteration. Must be positive.
+% TEXTPROGRESSBAR(...,'updstep',S) determines the minimum number of update
+% steps S between consecutive bar re-renderings. The option controls how
+% frequently the bar is rendered and in turn controls the computational 
+% overhead that the bar rendering incurs to the monitored task. It is
+% especially useful when bar is used for loops with large number of rounds
+% and short execution time per round.
+% (Default value is S=10 steps.)
 %
-% Returns:
-%   upd (function): A function used to update/render the progress bar.
-%                   The function takes an argument i <= n and renders the
-%                   text accordingly.
+% TEXTPROGRESSBAR(...,'startmsg',str) determines the message string to be
+% displayed before the progress bar.
+% (Default is str='Completed '.)
 %
-% Optional Parameters:
-%   barlength (int): length of the progress bar. Must be positive.
-%                    (Default value is 20 characters.)
-%   updstep (int): minimum number of progress (update) steps between
-%                     consecutive bar re-renderings. This controls how
-%                     frequently the bar is rendered to reduce the overhead
-%                     due to bar updating. It is especially useful when bar
-%                     is used for loops with large number of rounds and
-%                     short execution time per round.
-%                     (Default value is 10 steps.)
-%   startmsg (string): message to be displayed before the progress bar.
-%                      (Default is 'Completed '.)
-%   endmsg (string): message to be displayed after progress bar.
-%                    (Default is ' Done.')
-%   showremtime (logical): show an estimate of the remaining time.
-%                          (Default is true.)
-%   showbar (logical): show the progress bar.
-%                      (Default is true.)
-%   showpercentage (logical): show percentage completed.
-%                             (Default is true.)
-%   showactualnum (logical): show actual number of items completed.
-%                            (Default is false.)
-%   showfinaltime (logical): show total running time when completed.
-%                            (Default is true.)
-%   barsymbol (char): Symbol (character) to be used for the progress bar.
-%                     Must be a single character.
-%                     (Default is '='.)
-%   emptybarsymbol (char): Symbol (character) to be used for the empty
-%                          (non-completed) part of the progress bar.
-%                          Must be a single character.
-%                          (Default is ' '.)
+% TEXTPROGRESSBAR(...,'endmsg',str) determines the message string to be 
+% displayed after progress bar when the task is completed.
+% (Default is str=' Done.')
+%
+% TEXTPROGRESSBAR(...,'showremtime',b) logical parameter that controls
+% whether an estimate of the remaining time is displayed.
+% (Default is b=true.)
+%
+% TEXTPROGRESSBAR(...,'showbar',b) logical parameter that controls whether
+% the progress bar is displayed. (Default is b=true.)
+%
+% TEXTPROGRESSBAR(...,'showpercentage',b) logical parameter that controls
+% whether to display the percentage of completed items.
+% (Default is true.)
+%
+% TEXTPROGRESSBAR(...,'showactualnum',b) logical parameter that controls
+% whether to display the actual number of completed items.
+% (Default is false.)
+%
+% TEXTPROGRESSBAR(...,'showfinaltime',b) logical parameter that controls
+% whether to display the total run-time when completed.
+% (Default is true.)
+%
+% TEXTPROGRESSBAR(...,'barsymbol',c) determines the symbol (character) to
+% be used for the progress bar. c must be a single character.
+% (Default is c='='.)
+%
+% TEXTPROGRESSBAR(...,'emptybarsymbol',c) determines the symbol (character)
+% that is used to fill the un-completed part of the progress bar. c must be
+% a single character.
+% (Default is c=' '.)
 %
 % Example:
 %

@@ -12,7 +12,6 @@ upd = textprogressbar(n);
 for i = 1:n
     % Perform task:
     pause(0.05);
-    fprintf('asdfasdf\n')
     % Update progress bar:
     upd(i);
 end
