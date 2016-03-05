@@ -114,10 +114,8 @@ function upd = textprogressbar(n, varargin)
     
     % Initialize progress bar:
     bar = ['[', repmat(emptybarCharSymbol, 1, barCharLen), ']'];
-    delBlockBar = repmat('\b', 1, barCharLen+2);
     
     nextRenderPoint = 0;
-    barCharsPrinted = 0;
     startTime = tic;
     
     % Initalize block for actual number of completed items:
