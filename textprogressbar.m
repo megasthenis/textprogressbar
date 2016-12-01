@@ -11,7 +11,7 @@ function upd = textprogressbar(n, varargin)
 % a positive integer. 
 % (Default value is 20 characters.)
 %
-% TEXTPROGRESSBAR(...,'updstep',S) determines the minimum number of update
+% TEXTPROGRESSBAR(...,'updatestep',S) determines the minimum number of update
 % steps S between consecutive bar re-renderings. The option controls how
 % frequently the bar is rendered and in turn controls the computational 
 % overhead that the bar rendering incurs to the monitored task. It is
